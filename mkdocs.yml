@@ -1,0 +1,41 @@
+#~ ======================================================================
+#~ Gabriele Filomena - 09.02.2023
+#~ ======================================================================
+#~ conda install mkdocs mkdocs-material pymdown-extensions
+#~ pip install mkdocs-bibtex
+#~ mkdocs new .
+#~
+#~ mkdocs serve
+#~ ======================================================================
+site_name: The cityImage user manual
+site_author: Gabriele Filomena
+site_url: https://cityImage.readthedocs.io/en/latest
+
+theme:
+  name: readthedocs
+  locale: en
+  highlightjs: true
+  hljs_languages:
+    - python
+
+plugins:
+  - search
+
+markdown_extensions:
+  - footnotes
+  - pymdownx.emoji:
+  - attr_list #~ [label](url){target=_blank}
+
+nav:
+    - Home: 'index.md'
+    - 'User Guide':
+        # - 'Introduction': 'introduction.md'
+        - 'Identifying Nodes and Paths - Scraping from OpenStreetMap': '01-Nodes_Paths_fromOSM'
+        - 'Identifying Nodes and Paths - from Local Files': '02-Nodes_Paths_Local_Files'
+        - 'Identifying Regions': '03-District identification'
+        - 'Identifying Landmarks - Scraping from OpenStreetMap': ''
+        - 'Identifying Landmarks - from Local Files': '05-Landmarks_Local_Files'
+        - 'Identifying Barriers': ''
+    # - About:
+        # - 'About': 'about.md'
+
