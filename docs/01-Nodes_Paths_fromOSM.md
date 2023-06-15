@@ -74,7 +74,7 @@ plot = ci.plot_gdf(edges_graph, black_background = False, figsize = (10,10), tit
 
 
     
-![png](img/01/nodes01.png)
+![png](img/01/output_8_0.png)
     
 
 
@@ -210,12 +210,6 @@ for n, column in enumerate(columns):
                 geometry_size = 5, figsize = (5,5), base_map_gdf = edges_graph, base_map_zorder = 0, 
                 legend = True)
 ```
-
-
-    
-![png](img/01/output_8_0.png)
-    
-
 
 
     
