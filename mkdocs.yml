@@ -27,15 +27,14 @@ markdown_extensions:
   - attr_list #~ [label](url){target=_blank}
 
 nav:
-    - Home: 'index.md'
+    - Home: 'introduction.md'
     - 'User Guide':
-        # - 'Introduction': 'introduction.md'
-        - 'Identifying Nodes and Paths - Scraping from OpenStreetMap': '01-Nodes_Paths_fromOSM'
-        - 'Identifying Nodes and Paths - from Local Files': '02-Nodes_Paths_Local_Files'
-        - 'Identifying Regions': '03-District identification'
-        - 'Identifying Landmarks - Scraping from OpenStreetMap': ''
-        - 'Identifying Landmarks - from Local Files': '05-Landmarks_Local_Files'
-        - 'Identifying Barriers': ''
-    # - About:
-        # - 'About': 'about.md'
+        - 'Nodes and Paths - from OpenStreetMap': '01-Nodes_Paths_fromOSM.md'
+        - 'Nodes and Paths - from Local Files': '02-Nodes_Paths_Local_Files.md'
+        - 'Regions (Districts)': '03-District identification.md'
+        - 'Barriers (Edges)': '04-Barriers_fromOSM.md'
+        - 'Landmarks': '05-Landmarks.md'
+
+    - About:
+        - 'About': 'about.md'
 
