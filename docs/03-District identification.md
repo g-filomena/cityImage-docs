@@ -1,3 +1,6 @@
+# Street Network Analysis: District Identification
+
+
 ```python
 import osmnx as ox, networkx as nx, matplotlib.cm as cm, pandas as pd, numpy as np
 import geopandas as gpd
@@ -14,17 +17,28 @@ import cityImage as ci
 
 
 ```python
+# Important: find EPSG of your case-study area
+# Initialise path, names, etc.
+
 city_name = 'Muenster'
 epsg = 25832
 crs = 'EPSG:'+str(epsg)
 ```
+## 0. Define the network representing a larger area around and including the case-study area.
+For example, if one is interested in finding regions in the city center of Berlin, the indentification of the regions should be performed for the entire city or the Metropolitan area.
+Afterwards (see below) such districts should be assigned to the case study area. This is not mandatory but the algorithm is sensitive to the geographical extent of the area considered. 
+Smaller areas will produce smaller regions.
 
-### Download from OSM the drive network
+Moreover, it is advised to use vehicular streets only at this stage. 
+
+### 0.0 Download from OSM the drive network
 
 Choose between the following methods:
-* `OSMplace`, provide an OSM place name (e.g. City).
-* `polygon`, provide an WGS polygon of the case-study area.
-* `distance_from_address`, provide a precise address and define parameter `distance` (which is otherwise not necessary)
+
+* `OSMplace`, providing an OSM place name (e.g. City).
+* `polygon`, providing a Polygon (coordinates must be in units of latitude-longitude degrees).
+* `distance_from_address`, providing a precise address and setting the `distance` parameter.
+* `distance_from_point`, providing point coordinates (in units of latitude-longitude degrees) and setting the `distance` parameter to build the bounding box around the point.
 
 
 ```python
@@ -40,7 +54,7 @@ nodes_graph, edges_graph = ci.clean_network(nodes_graph, edges_graph, dead_ends 
 nodesDual_graph, edgesDual_graph = ci.dual_gdf(nodes_graph, edges_graph, epsg)
 ```
 
-### Alternatively, Load from local path (when already processed the network)
+### 0.1 Alternatively, load from local path (when the user has already processed the network)
 
 
 ```python
@@ -75,7 +89,7 @@ fig = ci.plot_gdf(edges_graph, black_background = False, figsize = (10,10), titl
     
 
 
-## District identification
+## 1. District identification
 
 
 ```python
@@ -113,7 +127,7 @@ fig = ci.plot_grid_gdf_columns(districts, columns = columns, titles = titles, ge
     
 
 
-
+### 1.1 District polygonisation
 ```python
 for n, column in enumerate(columns):
     cmap = ci.rand_cmap(nlabels = len(districts[column].unique()), type_color='bright')
@@ -147,11 +161,29 @@ saving_path = 'Outputs/'+city_name+'/entireNetwork/'
 districts.to_file(saving_path+city_name+"_edges.shp", driver='ESRI Shapefile')
 ```
 
-## Assigning regions to the Pedestrian Street Network
-### Case-study area (pedestrian walkable network). It should be ottained via notebook 01-Nodes_Paths
-This set of functions assigns regions to a walkable network for further modelling in Pedestrian Simulation, for example.
-The simply identifiaction of regions (districts) region from the urban configuration ends above.
+## 2. Assigning regions to the (Pedestrian) street network of the case-study area 
+This set of functions assigns regions to a walkable network for further modelling in Pedestrian Simulation, for example. The simply identifiaction of regions (districts) from the urban configuration ends above.
 
+### 2.1 Case-study area obtained from OSM:
+
+Choose between the following methods:
+
+* `OSMplace`, providing an OSM place name (e.g. City).
+* `polygon`, providing a Polygon (coordinates must be in units of latitude-longitude degrees).
+* `distance_from_address`, providing a precise address and setting the `distance` parameter.
+* `distance_from_point`, providing point coordinates (in units of latitude-longitude degrees) and setting the `distance` parameter to build the bounding box around the point.
+
+```python
+place = 'Domplatz, Muenster, Germany' ## must be different from the area used for the drive network
+download_method = 'distance_from_address'
+distance = 2500
+
+nodes_graph_ped, edges_graph_ped = ci.get_network_fromOSM(place, download_method, 'walk', epsg, distance = distance)
+nodes_graph_ped, edges_graph_ped = ci.clean_network(nodes_graph_ped, edges_graph_ped, dead_ends = True, 
+                                remove_islands = True, self_loops = True, same_vertexes_edges = True)
+```
+
+### 2.2 Case-study area (pedestrian walkable network) already obtained via notebook 01-Nodes_Paths. 
 
 ```python
 input_path = 'Outputs/'+city_name+'/'
@@ -167,27 +199,7 @@ nodes_graph_ped.index, edges_graph_ped.index  = nodes_graph_ped.nodeID, edges_gr
 nodes_graph_ped.index.name, edges_graph_ped.index.name  = None, None
 ```
 
-### Otherwise, get it from OSM:
-
-Choose between the following methods:
-* `OSMplace`, provide an OSM place name (e.g. City).
-* `polygon`, provide an WGS polygon of the case-study area.
-* `distance_from_address`, provide a precise address and define parameter `distance` (which is otherwise not necessary)
-
-
-```python
-place = 'Domplatz, Muenster, Germany' ## must be different from the area used for the drive network
-download_method = 'distance_from_address'
-distance = 2500
-
-nodes_graph_ped, edges_graph_ped = ci.get_network_fromOSM(place, download_method, 'walk', epsg, distance = distance)
-nodes_graph_ped, edges_graph_ped = ci.clean_network(nodes_graph_ped, edges_graph_ped, dead_ends = True, 
-                                remove_islands = True, self_loops = True, same_vertexes_edges = True)
-```
-
-### Option 2 - Load it from local path
-
-### Visualising
+### 2.3. Comparing drive vs walk Networks.
 
 
 ```python
@@ -214,7 +226,7 @@ fig = ci.plot_gdf(edges_graph_ped, scheme = None,  black_background = False, fig
     
 
 
-## Assigning nodes and edges in the pedestrian network to Partitions
+## 3. Assigning nodes and edges in the pedestrian network to partitions
 
 
 ```python
@@ -251,7 +263,7 @@ fig = ci.plot_gdf(nodes_graph_ped, column = column, title = 'Districts assigned 
     
 
 
-### Fixing disconnected districts and assigning nodes to existing connected districts
+### 3.1 Fixing disconnected and not valid districts, and assigning nodes to existing connected districts
 
 
 ```python
@@ -261,7 +273,7 @@ nodes_graph_ped = ci.amend_nodes_membership(nodes_graph_ped, edges_graph_ped, co
 nodes_graph_ped = ci.find_gateways(nodes_graph_ped, edges_graph_ped, column)
 ```
 
-## Visualising the final division
+### 3.2 Final division
 
 
 ```python
@@ -282,9 +294,9 @@ fig = ci.plot_gdf(nodes_graph_ped, column = column, title = 'Districts assigned 
 nodes_graph_ped['district'] = nodes_graph_ped[column].astype(int)
 ```
 
+## Saving
 
 ```python
-# saving
 saving_path = 'Outputs/'+city_name+'/'
 nodes_graph_ped.to_file(saving_path+city_name+"_nodes.shp", driver='ESRI Shapefile')
 edges_graph_ped.to_file(saving_path+city_name+"_edges.shp", driver='ESRI Shapefile')
