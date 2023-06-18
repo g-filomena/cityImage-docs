@@ -1,3 +1,9 @@
+
+# *cityImage User Manual*
+```
+Date: June 2023
+Version: 0.1.0
+```
 `cityImage` is a Python package that supports the extraction of The Image of the City by using geospatial datasets, either provided by the user or directly downloaded from OpenStreetMap. 
 
 ## Theoretical considerations
