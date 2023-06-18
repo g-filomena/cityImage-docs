@@ -27,7 +27,7 @@ markdown_extensions:
   - attr_list #~ [label](url){target=_blank}
 
 nav:
-    - Home: 'introduction.md'
+    - Home: 'index.md'
     - 'User Guide':
         - 'Nodes and Paths - from OpenStreetMap': '01-Nodes_Paths_fromOSM.md'
         - 'Nodes and Paths - from Local Files': '02-Nodes_Paths_Local_Files.md'
