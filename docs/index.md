@@ -18,6 +18,7 @@ For more details on Lynch’s work and the geo-computational formulation you can
 	
 ## Main purposes
 The set of different functions implemented in `cityImage` enable to identify the five Lynchan elements:
+
 * Crucial **Nodes** and **Paths** on the basis of betweenness centrality measures computed on the street network. Paths can be identified both from a primal and a dual graph representation of the street network, thus making use of angularity measures.
 * Urban regions (**districts**) by means of network community detection techniques (i.e. modularity optimisation).
 * Natural and artificial barriers (**edges**) such as rivers, railway structures and main roads.
